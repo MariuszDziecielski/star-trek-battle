@@ -1,0 +1,27 @@
+<div id="modalName" class="modal fade">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <img class="img-responsive center-block" src="assets/defiant_ds9.jpg" alt="">
+      </div>
+      <div class="modal-body">
+        <h3>Witaj na szlaku Gwiezdnej Wędrówki Graczu!</h3>
+        <form action="script.php" method="post" id="_form">
+          <label for="firstName">Wpisz swoje imię!</label>
+          <input type="text" id="firstName" name="fname" [(ngModel)]="player.name" required minlength="3" #name="ngModel">
+          <div *ngIf="name.invalid && (name.dirty || name.touched)" class="alert alert-danger">
+            <div *ngIf="name.errors.required">
+              Podaj swoje imię!
+            </div>
+            <div *ngIf="name.errors.minlength">
+              Imię musi mieć co najmniej 3 znaki!
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" form="_form" id="addName" class="btn btn-default" data-dismiss="modal" (click)="playGame()">Zagraj!</button>
+      </div>
+    </div>
+  </div>
+</div>

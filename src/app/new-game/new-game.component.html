@@ -1,0 +1,11 @@
+<div id="js-newGameElement" class="container" *ngIf="!gameStarted">
+  <div class="row text-center">
+    <h3>Kto wygra tym razem?
+      <br>Romulanin? Klingon?
+      <br>A może Kardasjanin?
+      <br>Rozpocznij Nową Grę i przekonaj się Sam!</h3>
+    <button id="js-newGameButton" class="btn btn-default" (click)="openGetNameModal()">
+      {{newGameText}}
+    </button>
+  </div>
+</div>

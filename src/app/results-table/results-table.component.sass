@@ -1,0 +1,80 @@
+@import '../../variables.sass'
+@import '../../mixin.sass'
+
+/* js-resultsTableElement */
+#js-resultsTableElement
+    padding-bottom: 50px
+    .row
+        font-size: 20px
+        .text-center
+            span
+                font-size: 20px
+                padding: 9px
+        .vs
+            font-size: 26px
+            +colors()
+            border-radius: 6px
+        &:nth-child(1)
+            #js-playerPoints
+                +colors($lightGreyColor, $greenColor)
+            #js-computerPoints
+                background-color: $lightGreyColor
+                color: $redColor
+        &:nth-child(2)
+            padding: 20px
+            .col-xs-5
+                span
+                    line-height: 40px
+                    +colors(#558999, $lightGreyColor)
+                    border-radius: 26px
+        &:nth-child(3)
+            #js-playerResult
+                color: $greenColor
+            #js-computerResult
+                color: $redColor
+
+/* Media queries */
+
+/* For tablets: */
+@media (max-width: 768px)
+    #js-resultsTableElement
+        .row
+            .text-center
+                padding: 0
+                span
+                    display: inline-block
+                #js-playerPoints,
+                #js-computerPoints
+                    display: block
+                    width: 27px
+                    margin: 0 auto
+                #js-playerPoints
+                    padding: 8px
+                #js-computerPoints
+                    padding: 8px 8px
+            &:nth-child(2)
+                padding: 20px 0
+                .col-xs-5
+                    padding: 0
+                    span
+                        font-size: 19px
+
+/* For smart phones: */
+@media (max-width: 480px)
+    #js-resultsTableElement
+        .row
+            .vs
+                font-size: 24px
+            &:nth-child(1)
+                #js-playerName,
+                #computerName
+                    font-size: 17px
+            &:nth-child(2)
+                #js-playerPick,
+                #js-computerPick
+                    padding: 6px
+                    font-size: 16px
+            &:nth-child(3)
+                #js-playerResult,
+                #js-computerResult
+                    font-size: 18px

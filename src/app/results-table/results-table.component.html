@@ -1,0 +1,49 @@
+<div id="js-resultsTableElement" class="container" *ngIf="gameStarted">
+  <div class="row">
+    <div class="col-xs-5 text-center">
+      <span id="js-playerPoints" class="badge">
+        {{playerPoints}}
+      </span>
+      <span id="js-playerName">
+        {{player.name}}
+      </span>
+    </div>
+    <div class="col-xs-2 text-center vs">
+      VS.
+    </div>
+    <div class="col-xs-5 text-center">
+      <span id="js-computerPoints" class="badge">
+        {{computerPoints}}
+      </span>
+      <span id="computerName">
+        {{computer.name}}
+      </span>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-xs-5 text-center">
+      <span id="js-playerPick">
+        {{player.selection}}
+      </span>
+    </div>
+    <div class="col-xs-2"></div>
+    <div class="col-xs-5 text-center">
+      <span id="js-computerPick">
+        {{computer.selection}}
+      </span>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-xs-5 text-center">
+      <span id="js-playerResult">
+        {{playerResult}}
+      </span>
+    </div>
+    <div class="col-xs-2"></div>
+    <div class="col-xs-5 text-center">
+      <span id="js-computerResult">
+        {{computerResult}}
+      </span>
+    </div>
+  </div>
+</div>

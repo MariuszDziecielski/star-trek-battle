@@ -1,0 +1,30 @@
+@import '../../variables.sass'
+
+/* js-playerPickElement */
+#js-playerPickElement
+    .row
+        button
+            color: $greyColor
+            margin: 10px
+            width: 155px
+            &:hover
+                color: #000
+            img
+                width: 100px
+            span
+                font-size: 20px
+                margin: 10px
+
+/* Media queries */
+
+/* For smart phones: */
+@media (max-width: 480px)
+    #js-playerPickElement
+        .row
+            button
+                margin: 5px
+                img
+                    width: 90px
+                span
+                    font-size: 17px
+                    margin: 7px
