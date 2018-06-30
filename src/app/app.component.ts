@@ -8,4 +8,7 @@ import * as $ from 'jquery';
   styleUrls: ['./app.component.sass']
 })
 export class AppComponent {
+
+  title = 'Star Trek Battle';
+
 }
