@@ -10,12 +10,12 @@ import { PlayersService } from '../players.service';
 })
 export class ModalDefeatComponent implements OnInit {
 
-  public player: Player;
+  player: Player;
 
   constructor(
-    private _players: PlayersService
+    private players: PlayersService
   ) {
-    this._players.getPlayer$().subscribe(newPlayer => this.player = newPlayer);
+    this.players.getPlayer$().subscribe(newPlayer => this.player = newPlayer);
   }
 
   ngOnInit() {

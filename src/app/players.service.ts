@@ -9,38 +9,38 @@ import { Player } from './player';
   providedIn: 'root'
 })
 export class PlayersService {
-  private _player: BehaviorSubject<Player>;
-  private _computer: BehaviorSubject<Player>;
+  private computer: BehaviorSubject<Player>;
+  private player: BehaviorSubject<Player>;
 
   constructor() {
-    this._player = new BehaviorSubject<Player>(
-      {
-        name: 'Spock',
-        selection: 'Wybór gracza',
-      }
-    );
-    this._computer = new BehaviorSubject<Player>(
+    this.computer = new BehaviorSubject<Player>(
       {
         name: 'Enterprise',
         selection: 'Wybór komputera',
       }
     );
+    this.player = new BehaviorSubject<Player>(
+      {
+        name: 'Spock',
+        selection: 'Wybór gracza',
+      }
+    );
   }
 
-  public getPlayer$(): Observable<Player> {
-    return this._player.asObservable();
+  getComputer$(): Observable<Player> {
+    return this.computer.asObservable();
   }
 
-  public setPlayer(newPlayer: Player): void {
-    this._player.next(newPlayer);
+  getPlayer$(): Observable<Player> {
+    return this.player.asObservable();
   }
 
-  public getComputer$(): Observable<Player> {
-    return this._computer.asObservable();
+  setComputer(newComputer: Player): void {
+    this.computer.next(newComputer);
   }
 
-  public setComputer(newComputer: Player): void {
-    this._computer.next(newComputer);
+  setPlayer(newPlayer: Player): void {
+    this.player.next(newPlayer);
   }
 
 }

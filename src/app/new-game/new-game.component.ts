@@ -10,28 +10,29 @@ import { PlayersService } from '../players.service';
   styleUrls: ['./new-game.component.sass']
 })
 export class NewGameComponent implements OnInit {
-  public gameStarted: boolean;
-  public firstGame: boolean;
-  public player: Player;
+  firstGame: boolean;
+  gameStarted: boolean;
 
-  public get newGameText(): string {
+  get newGameText(): string {
     return this.firstGame ? 'Nowa Gra!' : 'Jeszcze raz!';
   }
 
+  player: Player;
+
   constructor(
-    private _state: GameStateService,
-    private _players: PlayersService
+    private players: PlayersService,
+    private state: GameStateService
   ) {
-    this._state.getGameStartedState$().subscribe(newGameStartedState => this.gameStarted = newGameStartedState);
-    this._state.getFirstGameState$().subscribe(newFirstGameState => this.firstGame = newFirstGameState);
-    this._players.getPlayer$().subscribe(newPlayer => this.player = newPlayer);
+    this.state.getGameStartedState$().subscribe(newGameStartedState => this.gameStarted = newGameStartedState);
+    this.state.getFirstGameState$().subscribe(newFirstGameState => this.firstGame = newFirstGameState);
+    this.players.getPlayer$().subscribe(newPlayer => this.player = newPlayer);
   }
 
   ngOnInit() {
   }
 
-  public openGetNameModal(): void {
-    this._players.setPlayer(
+  openGetNameModal(): void {
+    this.players.setPlayer(
       Object.assign(this.player,
         { name: 'Spock' }
       )

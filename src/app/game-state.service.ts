@@ -7,28 +7,28 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class GameStateService {
-  private _gameStarted: BehaviorSubject<boolean>;
-  private _firstGame: BehaviorSubject<boolean>;
+  private firstGame: BehaviorSubject<boolean>;
+  private gameStarted: BehaviorSubject<boolean>;
 
   constructor() {
-    this._gameStarted = new BehaviorSubject<boolean>(false);
-    this._firstGame = new BehaviorSubject<boolean>(true);
+    this.firstGame = new BehaviorSubject<boolean>(true);
+    this.gameStarted = new BehaviorSubject<boolean>(false);
   }
 
-  public getGameStartedState$(): Observable<boolean> {
-    return this._gameStarted.asObservable();
+  getFirstGameState$(): Observable<boolean> {
+    return this.firstGame.asObservable();
   }
 
-  public setGameStartedState(newGameStartedState: boolean): void {
-    this._gameStarted.next(newGameStartedState);
+  getGameStartedState$(): Observable<boolean> {
+    return this.gameStarted.asObservable();
   }
 
-  public getFirstGameState$(): Observable<boolean> {
-    return this._firstGame.asObservable();
+  setFirstGameState(newFirstGameState: boolean): void {
+    this.firstGame.next(newFirstGameState);
   }
 
-  public setFirstGameState(newFirstGameState: boolean): void {
-    this._firstGame.next(newFirstGameState);
+  setGameStartedState(newGameStartedState: boolean): void {
+    this.gameStarted.next(newGameStartedState);
   }
 
 }

@@ -9,12 +9,12 @@ import { PlayersService } from '../players.service';
   styleUrls: ['./modal-victory.component.sass']
 })
 export class ModalVictoryComponent implements OnInit {
-  public player: Player;
+  player: Player;
 
   constructor(
-    private _players: PlayersService
+    private players: PlayersService
   ) {
-    this._players.getPlayer$().subscribe(newPlayer => this.player = newPlayer);
+    this.players.getPlayer$().subscribe(newPlayer => this.player = newPlayer);
   }
 
   ngOnInit() {

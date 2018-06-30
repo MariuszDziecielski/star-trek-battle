@@ -10,24 +10,23 @@ import { PlayersService } from '../players.service';
   styleUrls: ['./modal-get-name.component.sass']
 })
 export class ModalGetNameComponent implements OnInit {
-
-  public player: Player;
+  player: Player;
 
   constructor(
-    private _state: GameStateService,
-    private _players: PlayersService
+    private players: PlayersService,
+    private state: GameStateService
   ) {
-    this._players.getPlayer$().subscribe(newPlayer => this.player = newPlayer);
+    this.players.getPlayer$().subscribe(newPlayer => this.player = newPlayer);
   }
 
   ngOnInit() {
   }
 
-  public playGame(): void {
+  playGame(): void {
 
     if (this.player.name && this.player.name.length >= 3) {
-      this._state.setGameStartedState(true);
-      this._players.setPlayer(
+      this.state.setGameStartedState(true);
+      this.players.setPlayer(
         Object.assign(this.player,
           { name: this.player.name }
         )

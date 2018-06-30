@@ -10,21 +10,12 @@ import { PlayersService } from '../players.service';
   styleUrls: ['./results-table.component.sass']
 })
 export class ResultsTableComponent implements OnInit {
-  public gameStarted: boolean;
-  private _player: Player;
-  private _computer: Player;
 
-  public set player(player: Player) {
-    if (player) {
-      this._player = player;
-    }
+  get computer(): Player {
+    return this._computer;
   }
 
-  public get player(): Player {
-    return this._player;
-  }
-
-  public set computer(computer: Player) {
+  set computer(computer: Player) {
     if (computer) {
       this._computer = computer;
     }
@@ -33,31 +24,47 @@ export class ResultsTableComponent implements OnInit {
     }
   }
 
-  public get computer(): Player {
-    return this._computer;
+  computerPoints = 0;
+  computerResult = 'Wynik komputera';
+  gameStarted: boolean;
+
+  get player(): Player {
+    return this._player;
   }
 
-  public playerResult = 'Wynik gracza';
-  public computerResult = 'Wynik komputera';
-  public playerPoints = 0;
-  public computerPoints = 0;
-
-  constructor(
-    private _state: GameStateService,
-    private _players: PlayersService
-  ) {
-    this._state.getGameStartedState$().subscribe(newGameStartedState => this.gameStarted = newGameStartedState);
-    this._players.getPlayer$().subscribe(newPlayer => this.player = newPlayer);
-    this._players.getComputer$().subscribe(newComputer => this.computer = newComputer);
-  }
-
-  ngOnInit() {
-    if ($(window).width() < 480) {
-      this.setDefaultGameElements('Wynik', 'Wynik', 'Wybór', 'Wybór');
+  set player(player: Player) {
+    if (player) {
+      this._player = player;
     }
   }
 
-  public checkRoundWinner(playerPick: string, computerPick: string): void {
+  playerPoints = 0;
+  playerResult = 'Wynik gracza';
+
+  private _computer: Player;
+  private _player: Player;
+
+  constructor(
+    private players: PlayersService,
+    private state: GameStateService
+  ) {
+    this.state.getGameStartedState$().subscribe(newGameStartedState => this.gameStarted = newGameStartedState);
+    this.players.getPlayer$().subscribe(newPlayer => this.player = newPlayer);
+    this.players.getComputer$().subscribe(newComputer => this.computer = newComputer);
+  }
+
+  checkGameState(): void {
+    if (this.playerPoints === 10) {
+      $('#js-openModalVictoryButton').click();
+      this.setGameElements();
+    }
+    if (this.computerPoints === 10) {
+      $('#js-openModalDefeatButton').click();
+      this.setGameElements();
+    }
+  }
+
+  checkRoundWinner(playerPick: string, computerPick: string): void {
     this.playerResult = this.computerResult = '';
     let winnerIs = 'player';
     if (playerPick === computerPick) {
@@ -81,20 +88,33 @@ export class ResultsTableComponent implements OnInit {
     this.checkGameState();
   }
 
-  public checkGameState(): void {
-    if (this.playerPoints === 10) {
-      $('#js-openModalVictoryButton').click();
-      this.setGameElements();
-    }
-    if (this.computerPoints === 10) {
-      $('#js-openModalDefeatButton').click();
-      this.setGameElements();
+  ngOnInit() {
+    if ($(window).width() < 480) {
+      this.setDefaultGameElements('Wynik', 'Wynik', 'Wybór', 'Wybór');
     }
   }
 
-  public setGameElements(): void {
-    this._state.setGameStartedState(false);
-    this._state.setFirstGameState(false);
+  setDefaultGameElements(playerResult = 'Wynik gracza', computerResult = 'Wynik komputera',
+    playerSelection = 'Wybór gracza', computerSelection = 'Wybór komputera'): void {
+    this.playerResult = playerResult;
+    this.computerResult = computerResult;
+
+    this.players.setPlayer(
+      Object.assign(this.player,
+        { selection: playerSelection }
+      )
+    );
+
+    this.players.setComputer(
+      Object.assign(this.computer,
+        { selection: computerSelection }
+      )
+    );
+  }
+
+  setGameElements(): void {
+    this.state.setGameStartedState(false);
+    this.state.setFirstGameState(false);
     this.playerPoints = 0;
     this.computerPoints = 0;
     this.setDefaultGameElements();
@@ -102,23 +122,6 @@ export class ResultsTableComponent implements OnInit {
     if ($(window).width() < 480) {
       this.setDefaultGameElements('Wynik', 'Wynik', 'Wybór', 'Wybór');
     }
-  }
-
-  public setDefaultGameElements(playerResult = 'Wynik gracza', computerResult = 'Wynik komputera',
-    playerSelection = 'Wybór gracza', computerSelection = 'Wybór komputera'): void {
-    this.playerResult = playerResult;
-    this.computerResult = computerResult;
-
-    this._players.setPlayer(
-      Object.assign(this.player,
-        { selection: playerSelection }
-      )
-    );
-    this._players.setComputer(
-      Object.assign(this.computer,
-        { selection: computerSelection }
-      )
-    );
   }
 
 }

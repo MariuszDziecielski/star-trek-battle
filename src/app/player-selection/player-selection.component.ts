@@ -10,30 +10,30 @@ import { PlayersService } from '../players.service';
   styleUrls: ['./player-selection.component.sass']
 })
 export class PlayerSelectionComponent implements OnInit {
-  public gameStarted: boolean;
-  public player: Player;
-  public computer: Player;
-  public possiblePicks: string[] = ['Klingon', 'Romulanin', 'Kardasjanin'];
+  computer: Player;
+  gameStarted: boolean;
+  player: Player;
+  possiblePicks: string[] = ['Klingon', 'Romulanin', 'Kardasjanin'];
 
   constructor(
-    private _state: GameStateService,
-    private _players: PlayersService
+    private players: PlayersService,
+    private state: GameStateService
   ) {
-    this._state.getGameStartedState$().subscribe(newGameStartedState => this.gameStarted = newGameStartedState);
-    this._players.getPlayer$().subscribe(newPlayer => this.player = newPlayer);
-    this._players.getComputer$().subscribe(newPlayer => this.computer = newPlayer);
+    this.state.getGameStartedState$().subscribe(newGameStartedState => this.gameStarted = newGameStartedState);
+    this.players.getPlayer$().subscribe(newPlayer => this.player = newPlayer);
+    this.players.getComputer$().subscribe(newPlayer => this.computer = newPlayer);
   }
 
   ngOnInit() {
   }
 
-  public setPlayersPick(e): void {
-    this._players.setPlayer(
+  setPlayersPick(e): void {
+    this.players.setPlayer(
       Object.assign(this.player,
         { selection: e.currentTarget.classList[0] }
       )
     );
-    this._players.setComputer(
+    this.players.setComputer(
       Object.assign(this.computer,
         { selection: this.possiblePicks[Math.floor(Math.random() * 3)] }
       )
