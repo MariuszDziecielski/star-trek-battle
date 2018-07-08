@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 
-import { GameStateService } from '../game-state.service';
+import { Router } from '@angular/router';
+
 import { Player } from '../player';
 import { PlayersService } from '../players.service';
 
@@ -14,18 +15,16 @@ export class ModalGetNameComponent implements OnInit {
 
   constructor(
     private players: PlayersService,
-    private state: GameStateService
+    private router: Router
   ) {
     this.players.getPlayer$().subscribe(newPlayer => this.player = newPlayer);
   }
 
-  ngOnInit() {
-  }
+  ngOnInit() { }
 
   playGame(): void {
-
     if (this.player.name && this.player.name.length >= 3) {
-      this.state.setGameStartedState(true);
+      this.router.navigate(['app-player-selection']);
       this.players.setPlayer(
         Object.assign(this.player,
           { name: this.player.name }
@@ -33,5 +32,4 @@ export class ModalGetNameComponent implements OnInit {
       );
     }
   }
-
 }

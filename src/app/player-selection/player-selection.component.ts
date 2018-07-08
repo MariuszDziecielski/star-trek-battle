@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 
 import { GameStateService } from '../game-state.service';
 import { Player } from '../player';
@@ -9,9 +9,8 @@ import { PlayersService } from '../players.service';
   templateUrl: './player-selection.component.html',
   styleUrls: ['./player-selection.component.sass']
 })
-export class PlayerSelectionComponent implements OnInit {
+export class PlayerSelectionComponent implements OnInit, OnDestroy {
   computer: Player;
-  gameStarted: boolean;
   player: Player;
   possiblePicks: string[] = ['Klingon', 'Romulanin', 'Kardasjanin'];
 
@@ -19,12 +18,16 @@ export class PlayerSelectionComponent implements OnInit {
     private players: PlayersService,
     private state: GameStateService
   ) {
-    this.state.getGameStartedState$().subscribe(newGameStartedState => this.gameStarted = newGameStartedState);
     this.players.getPlayer$().subscribe(newPlayer => this.player = newPlayer);
     this.players.getComputer$().subscribe(newPlayer => this.computer = newPlayer);
   }
 
   ngOnInit() {
+    this.state.setGameStartedState(true);
+  }
+
+  ngOnDestroy() {
+    this.state.setGameStartedState(false);
   }
 
   setPlayersPick(e): void {
@@ -39,5 +42,4 @@ export class PlayerSelectionComponent implements OnInit {
       )
     );
   }
-
 }

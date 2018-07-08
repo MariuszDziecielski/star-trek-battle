@@ -113,7 +113,6 @@ export class ResultsTableComponent implements OnInit {
   }
 
   setGameElements(): void {
-    this.state.setGameStartedState(false);
     this.state.setFirstGameState(false);
     this.playerPoints = 0;
     this.computerPoints = 0;

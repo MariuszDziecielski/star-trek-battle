@@ -5,12 +5,11 @@
     </button>
     <app-modal-hello></app-modal-hello>
     <app-game-introduction></app-game-introduction>
-    <app-new-game></app-new-game>
+    <router-outlet></router-outlet>
     <button id="js-openModalGetNameButton" type="button" [hidden]="true" class="btn btn-primary" data-toggle="modal" data-target="#modalName">
         Otwórz
     </button>
     <app-modal-get-name></app-modal-get-name>
-    <app-player-selection></app-player-selection>
     <app-results-table></app-results-table>
     <button id="js-openModalVictoryButton" type="button" [hidden]="true" class="btn btn-primary" data-toggle="modal" data-target="#modalVictory">
         Otwórz

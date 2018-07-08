@@ -11,7 +11,6 @@ import { PlayersService } from '../players.service';
 })
 export class NewGameComponent implements OnInit {
   firstGame: boolean;
-  gameStarted: boolean;
 
   get newGameText(): string {
     return this.firstGame ? 'Nowa Gra!' : 'Jeszcze raz!';
@@ -23,21 +22,13 @@ export class NewGameComponent implements OnInit {
     private players: PlayersService,
     private state: GameStateService
   ) {
-    this.state.getGameStartedState$().subscribe(newGameStartedState => this.gameStarted = newGameStartedState);
     this.state.getFirstGameState$().subscribe(newFirstGameState => this.firstGame = newFirstGameState);
     this.players.getPlayer$().subscribe(newPlayer => this.player = newPlayer);
   }
 
-  ngOnInit() {
-  }
+  ngOnInit() { }
 
-  openGetNameModal(): void {
-    this.players.setPlayer(
-      Object.assign(this.player,
-        { name: 'Spock' }
-      )
-    );
-    $('#js-openModalGetNameButton').click();
+  openHelloModal(): void {
+    $('#js-openModalHelloButton').click();
   }
-
 }
