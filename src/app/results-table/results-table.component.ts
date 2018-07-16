@@ -1,6 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 
-import { GameStateService } from '../game-state.service';
+import { NgRedux } from '@angular-redux/store';
+
+import { Subscription } from 'rxjs';
+
+import { GameState } from '../game-state';
 import { Player } from '../player';
 import { PlayersService } from '../players.service';
 
@@ -9,118 +13,78 @@ import { PlayersService } from '../players.service';
   templateUrl: './results-table.component.html',
   styleUrls: ['./results-table.component.sass']
 })
-export class ResultsTableComponent implements OnInit {
-
-  get computer(): Player {
-    return this._computer;
-  }
-
-  set computer(computer: Player) {
-    if (computer) {
-      this._computer = computer;
-    }
-    if (!(this.player.selection === 'Wybór gracza') && !(this.player.selection === 'Wybór')) {
-      this.checkRoundWinner(this.player.selection, this.computer.selection);
-    }
-  }
-
-  computerPoints = 0;
-  computerResult = 'Wynik komputera';
+export class ResultsTableComponent implements OnInit, OnDestroy {
+  computer: Player;
+  computerPoints: number;
+  computerPointsSubscription: Subscription;
+  computerResult: string;
+  computerResultSubscription: Subscription;
+  computerSelection: string;
+  computerSelectionSubscription: Subscription;
+  computerSubscription: Subscription;
   gameStarted: boolean;
-
-  get player(): Player {
-    return this._player;
-  }
-
-  set player(player: Player) {
-    if (player) {
-      this._player = player;
-    }
-  }
-
-  playerPoints = 0;
-  playerResult = 'Wynik gracza';
-
-  private _computer: Player;
-  private _player: Player;
+  gameStartedSubscription: Subscription;
+  kardasjanSelectionSubscription: Subscription;
+  klingonSelectionSubscription: Subscription;
+  player: Player;
+  playerPoints: number;
+  playerPointsSubscription: Subscription;
+  playerResult: string;
+  playerResultSubscription: Subscription;
+  playerSelection: string;
+  playerSubscription: Subscription;
+  romulaninSelectionSubscription: Subscription;
 
   constructor(
-    private players: PlayersService,
-    private state: GameStateService
+    private ngRedux: NgRedux<GameState>,
+    private players: PlayersService
   ) {
-    this.state.getGameStartedState$().subscribe(newGameStartedState => this.gameStarted = newGameStartedState);
-    this.players.getPlayer$().subscribe(newPlayer => this.player = newPlayer);
-    this.players.getComputer$().subscribe(newComputer => this.computer = newComputer);
+    this.computerPointsSubscription = this.ngRedux.select<number>(['computer', 'points'])
+      .subscribe(newComputerPoints => this.computerPoints = newComputerPoints);
+
+    this.computerResultSubscription = this.ngRedux.select<string>(['computer', 'result'])
+      .subscribe(newComputerResult => this.computerResult = newComputerResult);
+
+    this.computerSelectionSubscription = this.ngRedux.select<string>(['computer', 'selection'])
+      .subscribe(newComputerSelection => this.computerSelection = newComputerSelection);
+
+    this.computerSubscription = this.players.getComputer$().subscribe(newPlayer => this.computer = newPlayer);
+
+    this.gameStartedSubscription = this.ngRedux.select<boolean>(['game', 'started'])
+      .subscribe(newGameStartedState => this.gameStarted = newGameStartedState);
+
+    this.kardasjanSelectionSubscription = this.ngRedux.select<string>(['player', 'selection'])
+      .subscribe(newPlayerSelection => this.playerSelection = newPlayerSelection);
+
+    this.klingonSelectionSubscription = this.ngRedux.select<string>(['player', 'selection'])
+      .subscribe(newPlayerSelection => this.playerSelection = newPlayerSelection);
+
+    this.playerPointsSubscription = this.ngRedux.select<number>(['player', 'points'])
+      .subscribe(newPlayerPoints => this.playerPoints = newPlayerPoints);
+
+    this.playerResultSubscription = this.ngRedux.select<string>(['player', 'result'])
+      .subscribe(newPlayerResult => this.playerResult = newPlayerResult);
+
+    this.playerSubscription = this.players.getPlayer$().subscribe(newPlayer => this.player = newPlayer);
+
+    this.romulaninSelectionSubscription = this.ngRedux.select<string>(['player', 'selection'])
+      .subscribe(newPlayerSelection => this.playerSelection = newPlayerSelection);
+
   }
 
-  checkGameState(): void {
-    if (this.playerPoints === 10) {
-      $('#js-openModalVictoryButton').click();
-      this.setGameElements();
-    }
-    if (this.computerPoints === 10) {
-      $('#js-openModalDefeatButton').click();
-      this.setGameElements();
-    }
+  ngOnDestroy() {
+    this.computerPointsSubscription.unsubscribe();
+    this.computerResultSubscription.unsubscribe();
+    this.computerSelectionSubscription.unsubscribe();
+    this.computerSubscription.unsubscribe();
+    this.gameStartedSubscription.unsubscribe();
+    this.kardasjanSelectionSubscription.unsubscribe();
+    this.klingonSelectionSubscription.unsubscribe();
+    this.playerPointsSubscription.unsubscribe();
+    this.playerResultSubscription.unsubscribe();
+    this.playerSubscription.unsubscribe();
+    this.romulaninSelectionSubscription.unsubscribe();
   }
 
-  checkRoundWinner(playerPick: string, computerPick: string): void {
-    this.playerResult = this.computerResult = '';
-    let winnerIs = 'player';
-    if (playerPick === computerPick) {
-      winnerIs = 'none';
-    } else if (
-      (computerPick === 'Klingon' && playerPick === 'Kardasjanin') ||
-      (computerPick === 'Kardasjanin' && playerPick === 'Romulanin') ||
-      (computerPick === 'Romulanin' && playerPick === 'Klingon')) {
-      winnerIs = 'computer';
-    }
-    if (winnerIs === 'player') {
-      this.playerResult = 'Wygrana!';
-      this.playerPoints++;
-    } else if (winnerIs === 'computer') {
-      this.computerResult = 'Wygrana!';
-      this.computerPoints++;
-    } else {
-      this.playerResult = 'Remis!';
-      this.computerResult = 'Remis!';
-    }
-    this.checkGameState();
-  }
-
-  ngOnInit() {
-    if ($(window).width() < 480) {
-      this.setDefaultGameElements('Wynik', 'Wynik', 'Wybór', 'Wybór');
-    }
-  }
-
-  setDefaultGameElements(playerResult = 'Wynik gracza', computerResult = 'Wynik komputera',
-    playerSelection = 'Wybór gracza', computerSelection = 'Wybór komputera'): void {
-    this.playerResult = playerResult;
-    this.computerResult = computerResult;
-
-    this.players.setPlayer(
-      Object.assign(this.player,
-        { selection: playerSelection }
-      )
-    );
-
-    this.players.setComputer(
-      Object.assign(this.computer,
-        { selection: computerSelection }
-      )
-    );
-  }
-
-  setGameElements(): void {
-    this.state.setFirstGameState(false);
-    this.playerPoints = 0;
-    this.computerPoints = 0;
-    this.setDefaultGameElements();
-
-    if ($(window).width() < 480) {
-      this.setDefaultGameElements('Wynik', 'Wynik', 'Wybór', 'Wybór');
-    }
-  }
-
+  ngOnInit() { }
 }

@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 
-import { BehaviorSubject } from 'rxjs';
-import { Observable } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 
 import { Player } from './player';
 
@@ -16,13 +15,11 @@ export class PlayersService {
     this.computer = new BehaviorSubject<Player>(
       {
         name: 'Enterprise',
-        selection: 'Wybór komputera',
       }
     );
     this.player = new BehaviorSubject<Player>(
       {
         name: 'Spock',
-        selection: 'Wybór gracza',
       }
     );
   }

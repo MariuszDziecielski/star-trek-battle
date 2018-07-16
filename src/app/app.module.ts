@@ -2,6 +2,12 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
+import { NgReduxModule, NgRedux, DevToolsExtension } from '@angular-redux/store';
+
+import { rootReducer, INITIAL_STATE } from '../store';
+import { GameState } from './game-state';
+import { GameActions } from './app.actions';
+
 import { AppRoutingModule } from './app-routing.module';
 
 import { AppComponent } from './app.component';
@@ -30,8 +36,23 @@ import { ModalDefeatComponent } from './modal-defeat/modal-defeat.component';
     BrowserModule,
     FormsModule,
     AppRoutingModule,
+    NgReduxModule
   ],
-  providers: [],
+  providers: [
+    GameActions
+  ],
   bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule {
+  constructor(ngRedux: NgRedux<GameState>,
+    devTools: DevToolsExtension
+  ) {
+    const storeEnhancers = devTools.isEnabled() ? [devTools.enhancer()] : [];
+    ngRedux.configureStore(
+      rootReducer,
+      INITIAL_STATE,
+      [],
+      storeEnhancers
+    );
+  }
+}

@@ -1,4 +1,6 @@
 export interface Player {
-    name: string;
-    selection: string;
+    name?: string;
+    selection?: string;
+    result?: string;
+    points?: number;
 }
