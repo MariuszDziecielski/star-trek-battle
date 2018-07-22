@@ -6,7 +6,7 @@
       </div>
       <div class="modal-body">
         <h3>Gratulacje
-          <span class="js-name">{{player.name}}</span>! Wygrałeś/aś grę!</h3>
+          <span class="js-name">{{ playerName$ | async }}</span>! Wygrałeś/aś grę!</h3>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal" routerLink="app-new-game">Zagraj ponownie!</button>

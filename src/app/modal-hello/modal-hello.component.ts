@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 
-import { Player } from '../player';
-import { PlayersService } from '../players.service';
+import { NgRedux } from '@angular-redux/store';
+
+import { GameActions } from '../app.actions';
+import { GameState } from '../game-state';
 
 @Component({
   selector: 'app-modal-hello',
@@ -9,22 +11,28 @@ import { PlayersService } from '../players.service';
   styleUrls: ['./modal-hello.component.sass']
 })
 export class ModalHelloComponent implements OnInit {
-  player: Player;
-
   constructor(
-    private players: PlayersService,
-  ) {
-    this.players.getPlayer$().subscribe(newPlayer => this.player = newPlayer);
+    private actions: GameActions,
+    private ngRedux: NgRedux<GameState>,
+  ) { }
+
+  ngOnInit() {
+    if ($(window).width() < 480) {
+      this.setDefaultPlayersState();
+    }
   }
 
-  ngOnInit() { }
-
   openGetNameModal(): void {
-    this.players.setPlayer(
-      Object.assign(this.player,
-        { name: 'Spock' }
-      )
-    );
+    this.setDefaultPlayersState(false);
+
+    if ($(window).width() < 480) {
+      this.setDefaultPlayersState();
+    }
+
     $('#js-openModalGetNameButton').click();
+  }
+
+  setDefaultPlayersState(mobile = true) {
+    this.ngRedux.dispatch(this.actions.setDefaultPlayersState(mobile));
   }
 }

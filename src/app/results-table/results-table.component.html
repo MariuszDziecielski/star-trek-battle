@@ -1,11 +1,11 @@
-<div id="js-resultsTableElement" class="container" *ngIf="gameStarted">
+<div id="js-resultsTableElement" class="container" *ngIf="gameStarted$ | async">
   <div class="row">
     <div class="col-xs-5 text-center">
       <span id="js-playerPoints" class="badge">
-        {{playerPoints}}
+        {{ playerPoints$ | async }}
       </span>
       <span id="js-playerName">
-        {{player.name}}
+        {{ playerName$ | async }}
       </span>
     </div>
     <div class="col-xs-2 text-center vs">
@@ -13,36 +13,37 @@
     </div>
     <div class="col-xs-5 text-center">
       <span id="js-computerPoints" class="badge">
-        {{computerPoints}}
+        {{ computerPoints$ | async }}
+
       </span>
       <span id="computerName">
-        {{computer.name}}
+        {{ computerName$ | async }}
       </span>
     </div>
   </div>
   <div class="row">
     <div class="col-xs-5 text-center">
       <span id="js-playerPick">
-        {{playerSelection}}
+        {{ playerSelection$ | async }}
       </span>
     </div>
     <div class="col-xs-2"></div>
     <div class="col-xs-5 text-center">
       <span id="js-computerPick">
-        {{computerSelection}}
+        {{ computerSelection$ | async }}
       </span>
     </div>
   </div>
   <div class="row">
     <div class="col-xs-5 text-center">
       <span id="js-playerResult">
-        {{playerResult}}
+        {{ playerResult$ | async }}
       </span>
     </div>
     <div class="col-xs-2"></div>
     <div class="col-xs-5 text-center">
       <span id="js-computerResult">
-        {{computerResult}}
+        {{ computerResult$ | async }}
       </span>
     </div>
   </div>

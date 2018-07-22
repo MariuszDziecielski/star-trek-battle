@@ -1,4 +1,4 @@
 export interface Game {
-    started: boolean;
-    first: boolean;
+    started?: boolean;
+    first?: boolean;
 }

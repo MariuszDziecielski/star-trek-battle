@@ -6,8 +6,8 @@
             </div>
             <div class="modal-body">
                 <h3>Niestety
-                    <span class="js-name">{{player.name}}</span> przegrałeś/aś grę! Przydałby Ci się intensywny trening na holodeku! Poćwicz trochę
-                    i może spróbujesz jeszcze raz?</h3>
+                    <span class="js-name">{{ playerName$ | async }}</span> przegrałeś/aś grę! Przydałby Ci się intensywny trening na holodeku!
+                    Poćwicz trochę i może spróbujesz jeszcze raz?</h3>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal" routerLink="app-new-game">Zagraj ponownie!</button>

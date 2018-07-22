@@ -1,10 +1,12 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 
 import { NgRedux } from '@angular-redux/store';
+
 import { Subscription } from 'rxjs';
 
 import { GameActions } from '../app.actions';
 import { GameState } from '../game-state';
+import { Player } from '../player';
 
 @Component({
   selector: 'app-player-selection',
@@ -12,71 +14,65 @@ import { GameState } from '../game-state';
   styleUrls: ['./player-selection.component.sass']
 })
 export class PlayerSelectionComponent implements OnInit, OnDestroy {
-  computerPoints: number;
+  computer: Player = {
+    points: null,
+    selection: null
+  };
+
   computerPointsSubscription: Subscription;
-  computerSelection: string;
   computerSelectionSubscription: Subscription;
-  kardasjanSelectionSubscription: Subscription;
-  klingonSelectionSubscription: Subscription;
-  playerPoints: number;
+
+  player: Player = {
+    points: null,
+    selection: null
+  };
+
   playerPointsSubscription: Subscription;
-  playerSelection: string;
-  romulaninSelectionSubscription: Subscription;
+  playerSelectionSubscription: Subscription;
 
   constructor(
     private actions: GameActions,
     private ngRedux: NgRedux<GameState>
   ) {
     this.computerPointsSubscription = this.ngRedux.select<number>(['computer', 'points'])
-      .subscribe(newComputerPoints => this.computerPoints = newComputerPoints);
+      .subscribe(newComputerPoints => this.computer.points = newComputerPoints);
 
     this.computerSelectionSubscription = this.ngRedux.select<string>(['computer', 'selection'])
-      .subscribe(newComputerSelection => this.computerSelection = newComputerSelection);
-
-    this.kardasjanSelectionSubscription = this.ngRedux.select<string>(['player', 'selection'])
-      .subscribe(newPlayerSelection => this.playerSelection = newPlayerSelection);
-
-    this.klingonSelectionSubscription = this.ngRedux.select<string>(['player', 'selection'])
-      .subscribe(newPlayerSelection => this.playerSelection = newPlayerSelection);
+      .subscribe(newComputerSelection => this.computer.selection = newComputerSelection);
 
     this.playerPointsSubscription = this.ngRedux.select<number>(['player', 'points'])
-      .subscribe(newPlayerPoints => this.playerPoints = newPlayerPoints);
+      .subscribe(newPlayerPoints => this.player.points = newPlayerPoints);
 
-    this.romulaninSelectionSubscription = this.ngRedux.select<string>(['player', 'selection'])
-      .subscribe(newPlayerSelection => this.playerSelection = newPlayerSelection);
-  }
-
-  ngOnInit() {
-    this.toggleGameStartedState();
-    if ($(window).width() < 480) {
-      this.setDefaultPlayersStateOnMobile();
-    }
+    this.playerSelectionSubscription = this.ngRedux.select<string>(['player', 'selection'])
+      .subscribe(newPlayerSelection => this.player.selection = newPlayerSelection);
   }
 
   ngOnDestroy() {
-    this.toggleGameStartedState();
     this.computerPointsSubscription.unsubscribe();
     this.computerSelectionSubscription.unsubscribe();
-    this.kardasjanSelectionSubscription.unsubscribe();
-    this.klingonSelectionSubscription.unsubscribe();
     this.playerPointsSubscription.unsubscribe();
-    this.romulaninSelectionSubscription.unsubscribe();
+    this.playerSelectionSubscription.unsubscribe();
+
+    this.toggleGameState('started');
+  }
+
+  ngOnInit() {
+    this.toggleGameState('started');
   }
 
   checkGameState(): void {
-    if (this.playerPoints === 10) {
-      $('#js-openModalVictoryButton').click();
-      this.setGameElements();
+    if (this.player.points === 10) {
+      this.endGame(true);
     }
 
-    if (this.computerPoints === 10) {
-      $('#js-openModalDefeatButton').click();
-      this.setGameElements();
+    if (this.computer.points === 10) {
+      this.endGame(false);
     }
   }
 
   checkRoundWinner(playerSelection: string, computerSelection: string): void {
-    this.cleanPlayersResult();
+    this.setPlayersResult(false);
+
     let winnerIs = 'player';
     if (playerSelection === computerSelection) {
       winnerIs = 'none';
@@ -86,104 +82,46 @@ export class PlayerSelectionComponent implements OnInit, OnDestroy {
       (computerSelection === 'Romulanin' && playerSelection === 'Klingon')) {
       winnerIs = 'computer';
     }
+
     if (winnerIs === 'player') {
-      this.setPlayerWin();
-      this.playerPointsIncrement();
+      this.setPlayersWin(true);
     } else if (winnerIs === 'computer') {
-      this.setComputerWin();
-      this.computerPointsIncrement();
+      this.setPlayersWin(false);
     } else {
-      this.setDraw();
+      this.setPlayersResult();
     }
+
     this.checkGameState();
   }
 
-  cleanPlayersResult() {
-    this.ngRedux.dispatch(this.actions.cleanPlayersResult());
+  endGame(playerVictory: boolean) {
+    playerVictory ? $('#js-openModalVictoryButton').click() : $('#js-openModalDefeatButton').click();
+    this.toggleGameState('first');
   }
 
-  computerPointsIncrement() {
-    this.ngRedux.dispatch(this.actions.computerPointsIncrement());
-  }
+  setPlayersPick(e): void {
+    this.setPlayersSelection(e.currentTarget.classList[0]);
 
-  playerPointsIncrement() {
-    this.ngRedux.dispatch(this.actions.playerPointsIncrement());
-  }
-
-  setComputerSelection() {
-    this.ngRedux.dispatch(this.actions.setComputerSelection());
-  }
-
-  setComputerWin() {
-    this.ngRedux.dispatch(this.actions.setComputerWin());
-  }
-
-  setDefaultPlayersState() {
-    this.ngRedux.dispatch(this.actions.setDefaultPlayersState());
-  }
-
-  setDefaultPlayersStateOnMobile() {
-    this.ngRedux.dispatch(this.actions.setDefaultPlayersStateOnMobile());
-  }
-
-  setDraw() {
-    this.ngRedux.dispatch(this.actions.setDraw());
-  }
-
-  setKardasjaninSelection() {
-    this.ngRedux.dispatch(this.actions.setKardasjaninSelection());
-  }
-
-  setKlingonSelection() {
-    this.ngRedux.dispatch(this.actions.setKlingonSelection());
-  }
-
-  setGameElements(): void {
-    this.toggleFirstGameState();
-    this.setDefaultPlayersState();
-
-    if ($(window).width() < 480) {
-      this.setDefaultPlayersStateOnMobile();
-    }
-  }
-
-  setPlayersPick(selection): void {
-    switch (selection) {
-      case 'Klingon': {
-        this.setKlingonSelection();
-        break;
-      }
-      case 'Romulanin': {
-        this.setRomulaninSelection();
-        break;
-      }
-      case 'Kardasjanin': {
-        this.setKardasjaninSelection();
-        break;
-      }
-    }
-    this.setComputerSelection();
-
-    if (!(this.playerSelection === 'Wybór gracza') && !(this.playerSelection === 'Wybór') &&
-      !(this.computerSelection === 'Wybór komputera') && !(this.computerSelection === 'Wybór')
+    if (!(this.player.selection === 'Wybór gracza') && !(this.player.selection === 'Wybór') &&
+      !(this.computer.selection === 'Wybór komputera') && !(this.computer.selection === 'Wybór')
     ) {
-      this.checkRoundWinner(this.playerSelection, this.computerSelection);
+      this.checkRoundWinner(this.player.selection, this.computer.selection);
     }
   }
 
-  setPlayerWin() {
-    this.ngRedux.dispatch(this.actions.setPlayerWin());
+  setPlayersResult(draw = true) {
+    this.ngRedux.dispatch(this.actions.setPlayersResult(draw));
   }
 
-  setRomulaninSelection() {
-    this.ngRedux.dispatch(this.actions.setRomulaninSelection());
+  setPlayersSelection(playerSelection) {
+    this.ngRedux.dispatch(this.actions.setPlayersSelection(playerSelection));
   }
 
-  toggleFirstGameState() {
-    this.ngRedux.dispatch(this.actions.toggleFirstGameState());
+  setPlayersWin(player) {
+    this.ngRedux.dispatch(this.actions.setPlayersWin(player));
   }
 
-  toggleGameStartedState() {
-    this.ngRedux.dispatch(this.actions.toggleGameStartedState());
+  toggleGameState(state) {
+    this.ngRedux.dispatch(this.actions.toggleGameState(state));
   }
 }

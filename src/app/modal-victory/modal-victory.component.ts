@@ -1,23 +1,14 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 
-import { Player } from '../player';
-import { PlayersService } from '../players.service';
+import { select } from '@angular-redux/store';
+
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-modal-victory',
   templateUrl: './modal-victory.component.html',
   styleUrls: ['./modal-victory.component.sass']
 })
-export class ModalVictoryComponent implements OnInit {
-  player: Player;
-
-  constructor(
-    private players: PlayersService
-  ) {
-    this.players.getPlayer$().subscribe(newPlayer => this.player = newPlayer);
-  }
-
-  ngOnInit() {
-  }
-
+export class ModalVictoryComponent {
+  @select(['player', 'name']) readonly playerName$: Observable<string>;
 }
