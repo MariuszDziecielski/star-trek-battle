@@ -3,6 +3,7 @@
 
 /* js-resultsTableElement */
 #js-resultsTableElement
+    overflow: hidden
     padding-bottom: 50px
     .row
         font-size: 20px
@@ -27,6 +28,14 @@
                     line-height: 40px
                     +colors(#558999, $lightGreyColor)
                     border-radius: 26px
+                img
+                    padding-top: 30px
+                    max-width: 100%
+                    height: auto
+                    &[visibility=hidden]
+                        visibility: hidden !important
+                    &[visibility=visible]
+                        visibility: visible !important
         &:nth-child(3)
             #js-playerResult
                 color: $greenColor

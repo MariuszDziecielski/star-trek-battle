@@ -5,7 +5,7 @@ import { GameState } from './app/game-state';
 
 export const INITIAL_STATE: GameState = {
     computer: {
-        name: 'Enterprise',
+        name: 'Komputer',
         points: 0,
         result: 'Wynik komputera',
         selection: 'Wybór komputera'
@@ -31,7 +31,7 @@ export function rootReducer(lastState: GameState, action: AnyAction): GameState 
         case GameActions.SET_DEFAULT_PLAYERS_STATE: return Object.assign(
             {}, lastState, {
                 computer: {
-                    name: 'Enterprise',
+                    name: 'Komputer',
                     points: 0,
                     result: action.mobile ? 'Wynik' : 'Wynik komputera',
                     selection: action.mobile ? 'Wybór' : 'Wybór komputera'
